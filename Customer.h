@@ -30,8 +30,8 @@ public:
 		string phoneNumber = "";
 	};
 	
-	// Description: Default constructor creates a Customer with initial values. We
-	//				choose to set customerID to -1 and let strings be empty.
+	// Description: Default constructor creates a Customer with initial values.
+	//				We choose to set customerID to -1 and let strings be empty.
 	Customer();
 
 	// Description: Constructor to instantiate a new Customer object with given data
@@ -45,9 +45,22 @@ public:
 	string getEmail() const;
 	int getCustomerID() const;
 
+	// Setters
+	void setFirstName(const string& firstName);
+	void setLastName(const string& lastName);
+	void setPhoneNumber(const string& phoneNumber);
+	void setAddress(const string& address);
+	void setEmail(const string& email);
+
 	// Description: This method searches for a customer matching the given criteria
 	//              and returns the customerID if found, or -1 if no match exists.
 	static int findCustomerID(const SearchCriteria& criteria);
+
+	// Description: This method updates the customer information in the database
+	bool updateCustomerInDB() const;
+
+	// Description: This method deletes a customer from the database
+	bool deleteCustomerByID(int customerID)
 };
 
 #endif
