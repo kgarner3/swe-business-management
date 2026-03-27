@@ -23,6 +23,7 @@ private:
     double expenses;
 
 public:
+    // Default constructor
     Employee();
 
     // Constructor for new employee
