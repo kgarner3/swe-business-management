@@ -1,0 +1,2 @@
+.DS_Store
+*.db # ignore the database file too
