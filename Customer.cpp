@@ -16,14 +16,16 @@ Customer::Customer() {
 	customerID = -1;
 }
 	
-Customer::Customer(string fN, string lN, string pN, string add, string email, int custID) {
+Customer::Customer(string fN, string lN, string pN, string add, string email, string uName, string pHash, string s, int custID) {
 	this->firstName = fN;
 	this->lastName = lN;
 	this->phoneNumber = pN;
 	this->address = add;
 	this->email = email;
+	this->userName = uName;
+	this->passwordHash = pHash;
+	this->salt = s;
 	this->customerID = custID;
-    salt = "";
 }
 
 //Getters
