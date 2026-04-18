@@ -39,7 +39,7 @@ def init_db():
             username              TEXT UNIQUE NOT NULL,
             passwordHash          TEXT NOT NULL,
             salt                  TEXT NOT NULL,
-            expenses              REAL NOT NULL DEFAULT 0.0
+            expenses              REAL NOT NULL DEFAULT 0.0,
             mustChangePassword    INTEGER NOT NULL DEFAULT 0
         )
     ''')
