@@ -9,10 +9,10 @@ client = genai.Client(api_key="This is where the key goes")
 
 # Email information for win-back & reminder emails
 SENDER_EMAIL = "team1.scheduler@gmail.com"
-SENDER_PASSWORD = "urtdlcvnlttmmlzx"
+SENDER_PASSWORD = "email password goes here"
 
 # Set email for testing. Set to None to send to actual customer emails.
-TEST_EMAIL = "kgarner3@students.towson.edu"
+TEST_EMAIL = "student email goes here"
 
 # Demo safety limits
 MAX_REMINDER_SENDS = 3
