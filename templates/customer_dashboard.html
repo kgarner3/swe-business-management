@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="dashboard-layout">
+        <div class="sidebar">
+            <h2>Customer Menu</h2>
+
+            <button type="button" class="menu-button" onclick="showDashboardSection('customerHomeSection')">
+                Home
+            </button>
+
+            <button type="button" class="menu-button" onclick="loadAndShowCustomer('myAppointmentsSection', loadMyAppointments)">
+                My Appointments
+            </button>
+
+            <button type="button" class="menu-button" onclick="goHome()">
+                Log Out / Home
+            </button>
+        </div>
+
+        <div class="dashboard-content">
+            <div id="customerHomeSection" class="dashboard-section">
+                <h1 id="customerWelcomeMessage">Hi there!</h1>
+                <p>Use the menu on the left to view your appointments.</p>
+            </div>
+
+            <div id="myAppointmentsSection" class="dashboard-section" style="display: none;">
+                <h1>My Appointments</h1>
+                <p>All of your scheduled and completed appointments.</p>
+                <div id="myAppointmentsTableContainer"><p>Loading...</p></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/get-customer-name")
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById("customerWelcomeMessage").textContent =
+                            "Hi there, " + data.firstName + "!";
+                    }
+                })
+                .catch(() => {});
+        });
+
+        function showDashboardSection(sectionId) {
+            document.querySelectorAll(".dashboard-section").forEach(s => s.style.display = "none");
+            const section = document.getElementById(sectionId);
+            if (section) section.style.display = "block";
+        }
+
+        function loadAndShowCustomer(sectionId, loaderFn) {
+            showDashboardSection(sectionId);
+            if (loaderFn) loaderFn();
+        }
+
+        function formatDate(dateStr) {
+            const [year, month, day] = dateStr.split('-');
+            const months = ["January","February","March","April","May","June",
+                            "July","August","September","October","November","December"];
+            return `${months[parseInt(month, 10) - 1]} ${parseInt(day, 10)}, ${year}`;
+        }
+
+        async function loadMyAppointments() {
+            const container = document.getElementById("myAppointmentsTableContainer");
+            if (!container) return;
+            container.innerHTML = "<p>Loading...</p>";
+
+            try {
+                const response = await fetch("/get-my-appointments");
+                const data = await response.json();
+
+                if (!data.success || data.appointments.length === 0) {
+                    container.innerHTML = "<p>No appointments found.</p>";
+                    return;
+                }
+
+                let html = `
+                    <table style="width:100%; border-collapse:collapse; margin-top:10px;">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left; padding:8px; border-bottom:2px solid #ccc;">Date</th>
+                                <th style="text-align:left; padding:8px; border-bottom:2px solid #ccc;">Employee</th>
+                                <th style="text-align:left; padding:8px; border-bottom:2px solid #ccc;">Service</th>
+                                <th style="text-align:left; padding:8px; border-bottom:2px solid #ccc;">Notes</th>
+                                <th style="text-align:right; padding:8px; border-bottom:2px solid #ccc;">Cost</th>
+                                <th style="text-align:center; padding:8px; border-bottom:2px solid #ccc;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                for (const appt of data.appointments) {
+                    const statusColor = appt.status === "Completed" ? "green"
+                                      : appt.status === "Cancelled" ? "#cc0000"
+                                      : "#b8860b";
+                    html += `
+                        <tr>
+                            <td style="padding:8px; border-bottom:1px solid #eee;">${formatDate(appt.date)}</td>
+                            <td style="padding:8px; border-bottom:1px solid #eee;">${appt.employee_name}</td>
+                            <td style="padding:8px; border-bottom:1px solid #eee;">${appt.service_name}</td>
+                            <td style="padding:8px; border-bottom:1px solid #eee; color:#555;">${appt.description || "—"}</td>
+                            <td style="padding:8px; border-bottom:1px solid #eee; text-align:right;">$${appt.cost.toFixed(2)}</td>
+                            <td style="padding:8px; border-bottom:1px solid #eee; text-align:center; color:${statusColor}; font-weight:bold;">${appt.status}</td>
+                        </tr>
+                    `;
+                }
+
+                html += `</tbody></table>`;
+                container.innerHTML = html;
+
+            } catch (error) {
+                container.innerHTML = "<p style='color:#cc0000;'>An error occurred while loading appointments.</p>";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>

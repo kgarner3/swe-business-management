@@ -1,0 +1,218 @@
+/*
+    Base Page Styling ==================================================================
+*/
+body {
+    font-family: Arial, sans-serif;               /*Defauly font*/
+    background-color: #f4f4f4;                  /*Light grey background*/
+    margin: 0;                                    /*Remove default browser margin*/
+    padding: 0;                                   /*Remove default padding*/
+}
+
+/* 
+    Company and customer login box ======================================================
+*/
+.container {
+width: 400px;                                     /*Fixed center location*/
+    margin: 80px auto;                            /*Centered horizontally pushing from top down*/
+    background-color: white;                    /*White background*/  
+    padding: 30px;                                /*Set inner spacing*/
+    border-radius: 8px;                           /*Round off corners*/
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);    /*Shadow off box*/
+    text-align: center;                           /*Text aligned to center*/
+}
+
+/* 
+    Employee login ====================================================================
+*/
+.top-nav {
+    position: absolute;                           /*Position on page*/
+    top: 20px;                                    /*Distance from top*/
+    right: 20px;                                  /*Distance from right*/
+}
+
+
+/*
+    Headings & text ===================================================================
+*/
+ h1 {
+    margin-bottom: 20px;                          /*Space after headings*/
+}
+
+p {
+    margin-bottom: 20px;                          /*Space after paragraphs*/
+    color: #333;                                /*Font color*/
+}
+
+/*
+    Form layout ======================================================================
+*/
+form {
+    display: flex;                                /*Enables flexbox*/
+    flex-direction: column;                       /*Stacks elements vertically*/
+    text-align: left;                             /*Align labels/input*/
+}
+
+label {
+    margin-bottom: 5px;                           /*Space after label*/
+    font-weight: bold;                            /*Bold text*/
+}
+
+input {
+    margin-bottom: 15px;                          /*Space between input*/
+    padding: 10px;                                /*Inner spacing*/
+    font-size: 14px;                              /*Font size*/
+}
+
+/* 
+    Button styles ================================================================
+*/
+button {
+    padding: 10px;                                /*Button size*/
+    font-size: 14px;                              /*Font size*/
+    cursor: pointer;                              /*Pointer cursor when hovering*/
+    border: none;                                 /*Remove border*/
+    border-radius: 4px;                           /*Rounded corners*/
+    background-color: #007bff;                  /*Button color*/
+    color: white;                               /*Font color*/
+}
+
+button:hover {
+    background-color: #0056b3;                  /*Darker color when hovering*/
+}
+
+/* 
+    Button grouping =============================================================
+*/
+.button-group {
+    display: flex;                                /*Enables flexbox*/
+    justify-content: center;                      /*Center horizontally*/
+    gap: 10px;                                    /*Space between buttons*/
+    margin-top: 15px;                             /*Space before group*/
+}
+
+/* 
+    Customer Login button ======================================================
+*/
+.button-group button {
+    background-color: #28a745;                  /*Button color*/
+    font-size: 16px;                              /*Font size*/
+    padding: 12px;                                /*Button size*/
+}
+
+.button-group button:hover {
+    background-color: #1e7e34;                  /*Darker color when hovering*/
+}
+
+/* 
+    Message displays for error/feedback ========================================
+*/
+#loginMessage,
+#changePasswordMessage,
+#customerLoginMessage,
+#customerChangePasswordMessage {
+    margin-top: 15px;                             /*Space before message*/
+    font-weight: bold;                            /*Bold font*/
+    color: #cc0000;                             /*Red for errors*/
+}
+
+/*
+    Message display for success/information =====================================
+*/
+#createCustomerMessage {
+    margin-top: 15px;                             /*Space before message*/
+    font-weight: bold;                            /*Bold font*/
+}
+
+/* 
+    Employee Dashboard Layout ===================================================
+*/
+.dashboard-layout {
+    display: flex;                                /*Enables flexbox*/
+    min-height: 100vh;                            /*Takes up full screen*/
+}
+
+.sidebar {                                        /*Left navigation tabs*/
+    width: 250px;                                 /*Width of left tab section*/
+    background-color: #1f2a38;                  /*Background color*/
+    color: white;                               /*Font color*/
+    padding: 20px;                                /*Inner spacing*/
+    box-sizing: border-box;                       /*Includes padding in width size*/
+}
+
+.sidebar h2 {
+    margin-top: 0;                                /*Remove top margin*/
+    margin-bottom: 20px;                          /*Space after heading*/
+    font-size: 22px;                              /*Font size*/
+}
+
+.menu-button {                                    /*Navigation buttons*/
+    display: block;                               /*Full width button*/
+    width: 100%;                                  /*Fills sidebar width*/
+    margin-bottom: 12px;                          /*Space between buttons*/
+    padding: 12px;                                /*Inner spacing*/
+    text-align: left;                             /*Align text left*/
+    background-color: #2d3e50;                  /*Button color background*/
+    color: white;                               /*Font color*/
+    border: none;                                 /*Remove default border*/
+    border-radius: 4px;                           /*Rounded corners*/
+    cursor: pointer;                              /*Pointer cursor when hovering*/
+}
+
+.menu-button:hover {
+    background-color: #3f5670;                  /*Lighter color when hovering*/
+}
+
+.dashboard-content {                              /*Main portion of screen*/
+    flex: 1;                                      /*Takes remaining space*/
+    padding: 40px;                                /*Inner spacing*/
+    background-color: #f4f4f4;                  /*Background color*/
+    box-sizing: border-box;                       /*Keeps padding inside*/
+}
+
+.dashboard-section {                              /*Sections of navigation sidebar*/
+    max-width: 900px;                             /*Limits section width*/
+    background-color: white;                    /*Background color*/
+    padding: 30px;                                /*Inner spacing*/
+    border-radius: 8px;                           /*Rounded corners*/
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);    /*Light shadow*/
+    overflow-x: auto;                             /*Scroll horizontally if needed*/
+}
+
+.modal-overlay {                                  /*Darkened background during popups*/
+    position: fixed;                              /*Stays on screen*/
+    top: 0;                                       /*Starts at top*/
+    left: 0;                                      /*Starts at left*/
+    width: 100%;                                  /*Full screen width*/
+    height: 100%;                                 /*Full screen height*/
+    background-color: rgba(0, 0, 0, 0.45);      /*Dark transparent background*/
+    display: flex;                                /*Flex for centering*/
+    justify-content: center;                      /*Center horizontally*/
+    align-items: center;                          /*Center vertically*/
+    z-index: 1000;                                /*Above page content*/
+}
+
+.modal-box {                                      /*Popup*/
+    background-color: white;                    /*Background color*/
+    width: 420px;                                 /*Standard width*/
+    max-width: 90%;                               /*Responsive on small screens*/
+    padding: 25px;                                /*Inner spacing*/
+    border-radius: 10px;                          /*Rounded corners*/
+    box-shadow: 0 0 18px rgba(0, 0, 0, 0.2);    /*Stronger shadow*/
+}
+
+.modal-box h2 {                                   /*Popup header*/
+    margin-top: 0;                                /*Removes top spacing*/
+    margin-bottom: 15px;                          /*Space below heading*/
+}
+
+.modal-details {                                  /*Popup text*/
+    margin: 15px 0;                               /*Vertical spacing*/
+    line-height: 1.6;                             /*Better readability*/
+    color: #333;                                /*Font color*/
+}
+
+.modal-buttons {                                  /*Popup buttons*/
+    display: flex;                                /*Buttons in a row*/
+    justify-content: flex-end;                    /*Align to the right*/
+    gap: 10px;                                    /*Space between buttons*/
+}
