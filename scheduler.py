@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 from database import get_connection
 
 # Scheduler handles appointment logic, availability checks, and automated email workflows
-client = genai.Client(api_key="AIzaSyDN_usGPsCEfPvsKRRPpdtmMJ3DBXIom1k")
+client = genai.Client(api_key="This is where the key goes")
 
 # Email information for win-back & reminder emails
 SENDER_EMAIL = "team1.scheduler@gmail.com"
