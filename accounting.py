@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from database import get_connection
 
 class Accounting:
     # Constructor
@@ -16,57 +17,62 @@ class Accounting:
     # Report methods
     @staticmethod
     def getRevReportLastMonth():
-        # TODO: Replace with SQLite query.
-        #
-        # Planned DB behavior:
-        # 1. Search the invoices table for invoices from the last 30 days
-        # 2. Sum the serviceCost values for those invoices
-        # 3. Return a revenue report object or dictionary
-        #
-        # Example return format:
-        # {
-        #     "reportType": "Revenue",
-        #     "startDate": "YYYY-MM-DD",
-        #     "endDate": "YYYY-MM-DD",
-        #     "totalRevenue": 0.0
-        # }
-
         startDate, endDate = Accounting.getLastMonthDateRange()
 
-        # Temporary placeholder behavior
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT SUM(serviceCost)
+            FROM invoices
+            WHERE date BETWEEN ? AND ?
+        ''', (startDate, endDate))
+
+        row = cursor.fetchone()
+
+        if row and row[0]:
+            total_revenue = row[0]
+        else:
+            total_revenue = 0.0
+
+        conn.close()
+
         return {
             "reportType": "Revenue",
             "startDate": startDate,
             "endDate": endDate,
-            "totalRevenue": 0.0
+            "totalRevenue": total_revenue
         }
+
 
     @staticmethod
     def getExpReportLastMonth():
-        # TODO: Replace with SQLite query.
-        #
-        # Planned DB behavior:
-        # 1. Search the employee expenses data from the last 30 days
-        # 2. Sum all recorded expenses in that time period
-        # 3. Return an expense report object or dictionary
-        #
-        # Example return format:
-        # {
-        #     "reportType": "Expenses",
-        #     "startDate": "YYYY-MM-DD",
-        #     "endDate": "YYYY-MM-DD",
-        #     "totalExpenses": 0.0
-        # }
-
         startDate, endDate = Accounting.getLastMonthDateRange()
 
-        # Temporary placeholder behavior
+        conn = get_connection() 
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT SUM(amount)
+            FROM expenses
+            WHERE date BETWEEN ? AND ?
+        ''', (startDate, endDate))
+
+        row = cursor.fetchone()
+        if row and row[0]:
+            total_expenses = row[0]
+        else:
+            total_expenses = 0.0
+
+        conn.close()
+
         return {
             "reportType": "Expenses",
             "startDate": startDate,
             "endDate": endDate,
-            "totalExpenses": 0.0
+            "totalExpenses": total_expenses
         }
+
 
     @staticmethod
     def generateMasterReportLastMonth():
