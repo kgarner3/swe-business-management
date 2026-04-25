@@ -3,6 +3,7 @@ from employee import Employee
 from customer import Customer
 from services import Service
 from scheduler import Scheduler
+from accounting import Accounting 
 from database import init_db, seed_customers, seed_employees, seed_services, seed_appointments, get_connection
 
 # Main Flask app: manages routing, session handling, and communication between the frontend and database
@@ -814,6 +815,21 @@ def get_my_appointments():
 
     appointments = Scheduler.getAppointmentsByCustomer(customer_id)
     return jsonify({"success": True, "appointments": appointments})
+
+# Returns revenue and expense reports for the last 30 days
+@app.route('/report-Section')
+def financial_report():
+    if not session.get("employeeID"):
+        return jsonify({"success": False})
+
+    revenue = Accounting.getRevReportLastMonth()
+    expenses = Accounting.getExpReportLastMonth()
+
+    return jsonify({
+        "success": True,
+        "revenueReport": revenue,
+        "expenseReport": expenses
+    }) 
 
 # Main ============================================================================================================
 if __name__ == '__main__':

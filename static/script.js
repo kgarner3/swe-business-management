@@ -1269,3 +1269,53 @@ async function triggerWinBack() {
         console.error(error);
     }
 }
+
+// Loads reports (revenue + expenses)
+// - Calls backend 
+// - Retrieves JSON report data
+// - Displays results in the report container
+async function loadReports() {
+    const container = document.getElementById("reportContainer");
+
+    if (!container) return;
+
+    container.innerHTML = "<p>Loading...</p>";
+
+    try {
+        const response = await fetch("/report-Section");
+        const data = await response.json();
+
+        if (!data.success) {
+            container.innerHTML = "<p style='color:red;'>Error loading report.</p>";
+            return;
+        }
+
+        const rev = data.revenueReport;
+        const exp = data.expenseReport;
+
+        container.innerHTML = `
+            <div style="margin-top:20px;">
+
+                <h2 style="font-size:20px; margin-bottom:10px;">Revenue Report</h2>
+                <p><strong>Start Date:</strong> ${rev.startDate}</p>
+                <p><strong>End Date:</strong> ${rev.endDate}</p>
+                <p><strong>Total Revenue:</strong> 
+                    <span style="color:green;">$${rev.totalRevenue.toFixed(2)}</span>
+                </p>
+
+                <hr style="margin:15px 0; border:none; border-top:1px solid #ccc;">
+
+                <h2 style="font-size:20px; margin-bottom:10px;">Expense Report</h2>
+                <p><strong>Start Date:</strong> ${exp.startDate}</p>
+                <p><strong>End Date:</strong> ${exp.endDate}</p>
+                <p><strong>Total Expenses:</strong> 
+                    <span style="color:#cc0000;">$${exp.totalExpenses.toFixed(2)}</span>
+                </p>
+
+            </div>
+        `;
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = "<p style='color:red;'>Error loading report.</p>";
+    }
+}

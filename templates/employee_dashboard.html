@@ -76,6 +76,11 @@
                 Schedule Appointment
             </button>
 
+            <button type="button" class="menu-button" onclick="loadAndShow('reportSection', loadReports)">
+                Expense and Revenue Reports
+            </button>
+
+
             <button type="button" class="menu-button" onclick="showDashboardSection('demoSection')">
                 Email Demo
             </button>
@@ -256,6 +261,15 @@
                 </form>
                 <p id="scheduleAppointmentMessage"></p>
             </div>
+
+            <div id="reportSection" class="dashboard-section" style="display: none;">
+                <h1>Expense and Revenue Reports (Last 30 Days)</h1>
+
+                <div id="reportContainer">
+                    <p>Loading...</p>
+                </div>
+            </div>
+
         </div>
     </div>
 
