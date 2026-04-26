@@ -1,5 +1,5 @@
 from datetime import datetime
-
+from database import get_connection
 
 class Invoice:
     class SearchCriteria:
@@ -41,59 +41,34 @@ class Invoice:
     def getInvoiceDate(self):
         return self.invoiceDate
 
-    # =========================
-    # Invoice logic methods
-    # =========================
     @staticmethod
+    def getInvoicesForCustomer(customerID):
+        """Get invoices for customer dashboard"""
+        conn = get_connection()
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            SELECT * FROM invoices
+            WHERE Customer_ID = ?
+            ORDER BY invoice_date DESC
+        ''', (customerID,))
+
+        rows = cursor.fetchall()
+        conn.close()
+
+        return [dict(r) for r in rows]
+
     def isValidInvoiceDate(invoiceDate):
+        """Check that the invoice date is valid and uses YYYY-MM-DD format."""
         try:
             datetime.strptime(invoiceDate, "%Y-%m-%d")
             return True
         except ValueError:
             return False
 
-    @staticmethod
-    def findInvoiceID(criteria):
-        # TODO: Replace with SQLite query.
-        #
-        # Planned DB behavior:
-        # 1. Search the invoices table
-        # 2. Match fields based on non-empty / non-default criteria
-        # 3. Return the matching invoiceID if found
-        # 4. Return false if no match exists
-
-        return False
-
-    @staticmethod
-    def getInvoicesForCustomer(customerID):
-        if customerID == -1:
-            return []
-
-        # TODO: Replace with SQLite query.
-        #
-        # Planned DB behavior:
-        # 1. Search the invoices table using customerID
-        # 2. Return all matching invoices
-        # 3. Sort by invoiceDate
-        # 4. Return the results as a list
-
-        return []
-
-    @staticmethod
-    def getInvoiceByAppointmentID(appointmentID):
-        if appointmentID == -1:
-            return None
-
-        # TODO: Replace with SQLite query.
-        #
-        # Planned DB behavior:
-        # 1. Search the invoices table using appointmentID
-        # 2. Return the matching invoice record if found
-        # 3. Return None otherwise
-
-        return None
-
     def generateInvoice(self):
+        """Create an invoice for this appointment if one does not already exist."""
+
         if self.customerID == -1 or self.appointmentID == -1 or self.serviceID == -1:
             return False
 
@@ -106,30 +81,44 @@ class Invoice:
         if not self.isValidInvoiceDate(self.invoiceDate):
             return False
 
-        # TODO: Replace with SQLite insertion query.
-        #
-        # Planned DB behavior:
-        # 1. Insert a new invoice record into the invoices table
-        # 2. Store customerID, appointmentID, serviceID, serviceName,
-        #    serviceCost, and invoiceDate
-        # 3. Let the database generate the invoiceID / invoice number
-        # 4. Assign the generated invoiceID back to this object
-        # 5. Return True if insertion succeeds
+        conn = get_connection()
+        cursor = conn.cursor()
 
-        return True
+        try:
+            # Prevent duplicate invoices for the same appointment
+            cursor.execute('''
+                SELECT Invoice_ID
+                FROM invoices
+                WHERE Appointment_ID = ?
+            ''', (self.appointmentID,))
 
-    def updateInvoiceInDB(self):
-        if self.invoiceID == -1:
+            existing_invoice = cursor.fetchone()
+
+            if existing_invoice:
+                self.invoiceID = existing_invoice["Invoice_ID"]
+                conn.close()
+                return True
+
+            # Create new invoice
+            cursor.execute('''
+                INSERT INTO invoices
+                (Customer_ID, Appointment_ID, Service_ID, service_name, service_cost, invoice_date)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                self.customerID,
+                self.appointmentID,
+                self.serviceID,
+                self.serviceName,
+                self.serviceCost,
+                self.invoiceDate
+            ))
+
+            self.invoiceID = cursor.lastrowid
+            conn.commit()
+            conn.close()
+            return True
+
+        except Exception as e:
+            print("Invoice insert error:", e)
+            conn.close()
             return False
-
-        if not self.isValidInvoiceDate(self.invoiceDate):
-            return False
-
-        # TODO: Replace with SQLite update query.
-        #
-        # Planned DB behavior:
-        # 1. Use invoiceID to locate the invoice record
-        # 2. Update editable invoice fields
-        # 3. Return True if update succeeds
-
-        return True
