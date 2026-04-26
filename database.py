@@ -319,3 +319,14 @@ def seed_invoices():
 
     conn.commit()
     conn.close()
+
+def has_data():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) as count FROM customers")
+    row = cursor.fetchone()
+
+    conn.close()
+
+    return row["count"] > 0
