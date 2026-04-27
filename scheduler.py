@@ -1,18 +1,12 @@
 from datetime import datetime, timedelta
 from google import genai
 import smtplib
+import os
 from email.mime.text import MIMEText
 from database import get_connection
 
 # Scheduler handles appointment logic, availability checks, and automated email workflows
-client = genai.Client(api_key="AIzaSyD2ED3IvZyLn71wHjjxqiwAqiNnhQLysNs")
-
-# Email information for win-back & reminder emails
-SENDER_EMAIL = "team1.scheduler@gmail.com"
-SENDER_PASSWORD = "akqtrjwdyqovsgyt"
-
-# Set email for testing. Set to None to send to actual customer emails.
-TEST_EMAIL = "kgarner3@students.towson.edu"
+api_key = os.environ.get("GEMINI_API_KEY")
 
 # Demo safety limits
 MAX_REMINDER_SENDS = 3
