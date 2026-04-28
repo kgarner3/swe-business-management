@@ -96,16 +96,16 @@ def seed_customers():
     cursor = conn.cursor()
 
     customers = [
-        ("John", "Doe", "john@example.com", "555-111-1111", "123 Main St", "jdoe"),
-        ("Jane", "Smith", "jane@example.com", "555-222-2222", "456 Oak Ave", "jsmith"),
-        ("Mike", "Brown", "mike@example.com", "555-333-3333", "789 Pine Rd", "mbrown"),
-        ("Emily", "Davis", "emily@example.com", "555-444-4444", "321 Elm St", "edavis"),
-        ("Chris", "Wilson", "chris@example.com", "555-555-5555", "654 Maple Dr", "cwilson"),
-        ("Sarah", "Miller", "sarah@example.com", "555-666-6666", "987 Cedar Ln", "smiller"),
-        ("David", "Taylor", "david@example.com", "555-777-7777", "159 Birch St", "dtaylor"),
-        ("Laura", "Anderson", "laura@example.com", "555-888-8888", "753 Walnut Ave", "landerson"),
-        ("James", "Thomas", "james@example.com", "555-999-9999", "852 Spruce Dr", "jthomas"),
-        ("Olivia", "Jackson", "olivia@example.com", "555-000-0000", "147 Aspen Ct", "ojackson")
+        ("John", "Doe", "john@example.com", "5551111111", "123 Main St", "jdoe"),
+        ("Jane", "Smith", "jane@example.com", "5552222222", "456 Oak Ave", "jsmith"),
+        ("Mike", "Brown", "mike@example.com", "5553333333", "789 Pine Rd", "mbrown"),
+        ("Emily", "Davis", "emily@example.com", "5554444444", "321 Elm St", "edavis"),
+        ("Chris", "Wilson", "chris@example.com", "5555555555", "654 Maple Dr", "cwilson"),
+        ("Sarah", "Miller", "sarah@example.com", "5556666666", "987 Cedar Ln", "smiller"),
+        ("David", "Taylor", "david@example.com", "5557777777", "159 Birch St", "dtaylor"),
+        ("Laura", "Anderson", "laura@example.com", "5558888888", "753 Walnut Ave", "landerson"),
+        ("James", "Thomas", "james@example.com", "5559999999", "852 Spruce Dr", "jthomas"),
+        ("Olivia", "Jackson", "olivia@example.com", "5550000000", "147 Aspen Ct", "ojackson")
     ]
 
     for first, last, email, phone, address, username in customers:
