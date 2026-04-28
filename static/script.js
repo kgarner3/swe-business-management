@@ -344,6 +344,11 @@ document.addEventListener("DOMContentLoaded", function () {
         return /^[A-Za-z][A-Za-z\s'.-]*$/.test(name)
     }
 
+    function isValidEmail(email) {
+        return /^[^\s@]+@[A-Za-z0-9-]+\.[A-Za-z]{2,}$/.test(email)
+            && email.split("@")[1].split(".").length === 2;
+    }
+
     // Handles creating a new customer
     // - Validates all fields
     // - Sends data to backend
@@ -376,6 +381,12 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!isValidName(firstName) || !isValidName(lastName)) {
                 createCustomerMessage.style.color = "#cc0000";
                 createCustomerMessage.textContent= "Please enter a valid first and last name.";
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                createCustomerMessage.style.color = "#cc0000";
+                createCustomerMessage.textContent = "Please enter a valid email address.";
                 return;
             }
 
@@ -461,7 +472,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 pendingDeleteCustomerID = customer.customerID;
 
                 deleteCustomerDetails.innerHTML = `
-                    <strong>ID:</strong> ${customer.customerID}<br>
+                    <strong>Customer ID:</strong> ${customer.customerID}<br>
                     <strong>Name:</strong> ${customer.firstName} ${customer.lastName}<br>
                     <strong>Email:</strong> ${customer.email}<br>
                     <strong>Phone:</strong> ${customer.phoneNumber}<br>
@@ -637,6 +648,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            if (!isValidEmail(email)) {
+                updateMessage.style.color = "#cc0000";
+                updateMessage.textContent = "Please enter a valid email address.";
+                return;
+            }
+
             pendingUpdateCustomerData = {
                 customerID: customerID,
                 firstName: firstName,
@@ -736,6 +753,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            if (!isValidEmail(email)) {
+                createEmployeeMessage.style.color = "#cc0000";
+                createEmployeeMessage.textContent = "Please enter a valid email address.";
+                return;
+            }
+
             try {
                 const response = await fetch("/create-employee", {
                     method: "POST",
@@ -808,7 +831,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 pendingDeleteEmployeeID = employee.employeeID;
 
                 deleteEmployeeDetails.innerHTML = `
-                    <strong>ID:</strong> ${employee.employeeID}<br>
+                    <strong>Employee ID:</strong> ${employee.employeeID}<br>
                     <strong>Name:</strong> ${employee.firstName} ${employee.lastName}<br>
                     <strong>Email:</strong> ${employee.email}<br>
                     <strong>Username:</strong> ${employee.username}
@@ -963,6 +986,12 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!isValidName(firstName) || !isValidName(lastName)) {
                 updateMessage.style.color = "#cc0000";
                 updateMessage.textContent= "Please enter a valid first and last name.";
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                updateMessage.style.color = "#cc0000";
+                updateMessage.textContent = "Please enter a valid email address.";
                 return;
             }
 
@@ -1123,7 +1152,7 @@ function openStatusModal(appointmentID, customerName, date, currentExpenses) {
             <strong>Customer:</strong> ${customerName}<br>
             <strong>Date:</strong> ${formatDate(date)}<br><br>
             <label for="modalAdditionalExpenses" style="font-weight:bold;">Additional Expenses ($)</label><br>
-            <input type="number" id="modalAdditionalExpenses" min="0" step="0.01"
+            <input type="number" id="modalAdditionalExpenses" min="0" max="10000"
                 value="${parseFloat(currentExpenses).toFixed(2)}"
                 style="width:100%; padding:6px; margin-top:4px; box-sizing:border-box;">
         `;
@@ -1139,9 +1168,31 @@ function openStatusModal(appointmentID, customerName, date, currentExpenses) {
 async function submitStatusUpdate(newStatus) {
     if (!pendingStatusAppointmentID) return;
 
+    const messageDiv = document.getElementById("modalStatusMessage");
+
+    if (messageDiv) {
+        messageDiv.textContent = "";
+    }
+
     const expensesInput = document.getElementById("modalAdditionalExpenses");
     const additionalExpenses = expensesInput !== null ? parseFloat(expensesInput.value) : 0;
 
+     if (isNaN(additionalExpenses)) {
+        additionalExpenses = 0;
+    }
+    
+    if (additionalExpenses < 0) {
+        messageDiv.textContent = "Additional expenses cannot be negative.";
+        return;
+    }
+
+    if (additionalExpenses > 10000) {
+        messageDiv.textContent = "Additional expenses cannot be greater than $10000.00.";
+        return;
+    }
+
+    messageDiv.textContent = ""; // clear if valid
+    
     try {
         const response = await fetch("/update-appointment-status", {
             method: "POST",
@@ -1172,8 +1223,16 @@ async function submitStatusUpdate(newStatus) {
 // Closes status modal without saving
 function closeStatusModal() {
     pendingStatusAppointmentID = null;
+
     const modal = document.getElementById("updateAppointmentStatusModal");
     if (modal) modal.style.display = "none";
+
+    // ✅ Clear message when closing
+    const messageDiv = document.getElementById("modalStatusMessage");
+    if (messageDiv) {
+        messageDiv.textContent = "";
+        messageDiv.style.color = "#cc0000"; // reset to default error color
+    }
 }
 
 // Saves additional expenses without changing status
@@ -1183,8 +1242,33 @@ function closeStatusModal() {
 async function saveExpensesOnly() {
     if (!pendingStatusAppointmentID) return;
 
+    const messageDiv = document.getElementById("modalStatusMessage");
+
+    if (messageDiv) {
+        messageDiv.textContent = "";
+        messageDiv.style.color = "#cc0000";
+    }
+
     const expensesInput = document.getElementById("modalAdditionalExpenses");
-    const additionalExpenses = expensesInput !== null ? parseFloat(expensesInput.value) : 0;
+    let additionalExpenses = expensesInput !== null ? parseFloat(expensesInput.value) : 0;
+
+    if (isNaN(additionalExpenses)) {
+        additionalExpenses = 0;
+    }
+
+    if (additionalExpenses < 0) {
+        if (messageDiv) {
+            messageDiv.textContent = "Additional expenses cannot be negative.";
+        }
+        return;
+    }
+
+    if (additionalExpenses > 10000) {
+        if (messageDiv) {
+            messageDiv.textContent = "Additional expenses cannot be greater than $10000.00.";
+        }
+        return;
+    }
 
     try {
         const response = await fetch("/save-appointment-expenses", {
@@ -1199,26 +1283,23 @@ async function saveExpensesOnly() {
         const data = await response.json();
 
         if (data.success) {
-            // Update the displayed value in the table without closing the modal
             loadAllAppointments();
-            // Show brief confirmation in the modal
-            const details = document.getElementById("updateAppointmentStatusDetails");
-            const savedMsg = document.createElement("p");
-            savedMsg.textContent = "✓ Expenses saved.";
-            savedMsg.style.color = "green";
-            savedMsg.style.marginTop = "8px";
-            savedMsg.style.fontWeight = "bold";
-            // Remove any previous confirmation message
-            const prev = details.querySelector(".save-confirm");
-            if (prev) prev.remove();
-            savedMsg.classList.add("save-confirm");
-            details.appendChild(savedMsg);
+
+            if (messageDiv) {
+                messageDiv.style.color = "green";
+                messageDiv.textContent = "✓ Expenses saved.";
+            }
         } else {
-            alert(data.message || "Unable to save expenses.");
+            if (messageDiv) {
+                messageDiv.textContent = data.message || "Unable to save expenses.";
+            }
         }
     } catch (error) {
         console.error(error);
-        alert("An error occurred while saving expenses.");
+
+        if (messageDiv) {
+            messageDiv.textContent = "An error occurred while saving expenses.";
+        }
     }
 }
 
@@ -1598,14 +1679,14 @@ async function triggerReminders() {
         if (data.sent.length > 0) {
             html += "<ul style='margin-top:8px;'>";
             for (const r of data.sent) {
-                html += `<li>✓ <strong>${r.customer}</strong> (${r.email}) — ${r.service} on ${formatDate(r.date)}</li>`;
+                html += `<li><strong>${r.customer}</strong> (${r.email}) - ${r.service} on ${formatDate(r.date)}</li>`;
             }
             html += "</ul>";
         }
         if (data.failed.length > 0) {
             html += "<ul style='margin-top:8px; color:#cc0000;'>";
             for (const r of data.failed) {
-                html += `<li>✗ <strong>${r.customer}</strong> (${r.email}) — ${r.error || "Unknown error"}</li>`;
+                html += `<li><strong>${r.customer}</strong> (${r.email}) - ${r.error || "Unknown error"}</li>`;
             }
             html += "</ul>";
         }
@@ -1645,14 +1726,14 @@ async function triggerWinBack() {
         if (data.sent.length > 0) {
             html += "<ul style='margin-top:8px;'>";
             for (const r of data.sent) {
-                html += `<li>✓ <strong>${r.customer}</strong> (${r.email}) — last appointment ${formatDate(r.last_appointment)}</li>`;
+                html += `<li><strong>${r.customer}</strong> (${r.email}) - last appointment ${formatDate(r.last_appointment)}</li>`;
             }
             html += "</ul>";
         }
         if (data.failed.length > 0) {
             html += "<ul style='margin-top:8px; color:#cc0000;'>";
             for (const r of data.failed) {
-                html += `<li>✗ <strong>${r.customer}</strong> (${r.email}) — ${r.error || "Unknown error"}</li>`;
+                html += `<li><strong>${r.customer}</strong> (${r.email}) - ${r.error || "Unknown error"}</li>`;
             }
             html += "</ul>";
         }
