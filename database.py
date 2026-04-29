@@ -105,7 +105,9 @@ def seed_customers():
         ("David", "Taylor", "david@example.com", "5557777777", "159 Birch St", "dtaylor"),
         ("Laura", "Anderson", "laura@example.com", "5558888888", "753 Walnut Ave", "landerson"),
         ("James", "Thomas", "james@example.com", "5559999999", "852 Spruce Dr", "jthomas"),
-        ("Olivia", "Jackson", "olivia@example.com", "5550000000", "147 Aspen Ct", "ojackson")
+        ("Olivia", "Jackson", "olivia@example.com", "5550000000", "147 Aspen Ct", "ojackson"),
+        ("Tim", "DeLloyd", "tdello3@students.towson.edu", "3016761656", "123 Towson Dr", "tdello3"),
+        ("Owen", "Barnes", "barnes.owen.a@gmail.com", "3019563088", "877241****LUNA", "barnes.owen")
     ]
 
     for first, last, email, phone, address, username in customers:
